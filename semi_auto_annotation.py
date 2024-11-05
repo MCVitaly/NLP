@@ -3,24 +3,21 @@ import torch
 from transformers import AutoTokenizer, AutoModelForTokenClassification
 import json
 
-
-
 model_path = "./model_output"
 tokenizer = AutoTokenizer.from_pretrained(model_path)
 model = AutoModelForTokenClassification.from_pretrained(model_path)
-model.eval()    #switching to inference mode
+model.eval()  # switching to inference mode
 
 # Loading a list of labels
 with open(f"{model_path}/label_list.json", "r") as f:
     label_list = json.load(f)
 
 
-
 def label_text(text):
     tokens = tokenizer(text, return_tensors="pt", truncation=True)
-    with torch.no_grad():   # disabling the calculation of gradients
-        outputs = model(**tokens).logits
-    predictions = outputs.argmax(dim=-1).squeeze().tolist()
+    with torch.no_grad():  # disabling the calculation of gradients
+        outputs = model(**tokens).logits    #calls a model with tokenized input data
+    predictions = outputs.argmax(dim=-1).squeeze().tolist() #extracting predicted labels from logisticians obtained from the model
     labels = [label_list[i] for i in predictions if i != -100]
 
     words = tokenizer.convert_ids_to_tokens(tokens["input_ids"].squeeze(), skip_special_tokens=True)
@@ -45,7 +42,6 @@ def label_text(text):
         cleaned_labels.append(current_label)
 
     return list(zip(cleaned_words, cleaned_labels))
-
 
 
 def auto_annotate(limit_rows=None):

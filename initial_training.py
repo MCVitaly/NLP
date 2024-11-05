@@ -50,12 +50,12 @@ def tokenize_and_align_labels(batch):
 
 tokenized_datasets = dataset.map(tokenize_and_align_labels, batched=True)
 
-# Education parametrs
+# Education parameters
 training_args = TrainingArguments(
     output_dir="./model_output",
-    per_device_train_batch_size=8,
-    num_train_epochs=3,
-    weight_decay=0.01,
+    per_device_train_batch_size=8,  #the number of examples processed at the same time
+    num_train_epochs=3, #how many times will the model go through the entire training dataset
+    weight_decay=0.01,  #the weights will decrease slightly at each iteration
 )
 
 trainer = Trainer(

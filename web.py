@@ -23,8 +23,8 @@ def extract_product_names(text):
     product_names = []
     words = tokenizer.convert_ids_to_tokens(tokens["input_ids"].squeeze(), skip_special_tokens=True)
     for word, prediction in zip(words, predictions):
-        if prediction == 1:  # Если метка "PRODUCT" представлена числом 1
-            cleaned_word = word.replace("##", "")  # Убираем префиксы ##
+        if prediction == 1:
+            cleaned_word = word.replace("##", "")
             product_names.append(cleaned_word)
 
     return " ".join(product_names)
@@ -34,9 +34,9 @@ def extract_product_names(text):
 def index():
     return render_template_string("""
         <form action="/extract" method="post">
-            <label for="url">Введите URL:</label>
+            <label for="url">Enter URL:</label>
             <input type="text" name="url" id="url" required>
-            <button type="submit">Извлечь продукты</button>
+            <button type="submit">Extract products</button>
         </form>
     """)
 
@@ -51,7 +51,7 @@ def extract():
         product_names = extract_product_names(text)
         return jsonify({"products": product_names})
     except requests.exceptions.RequestException:
-        return jsonify({"error": "Не удалось загрузить содержимое URL"}), 500
+        return jsonify({"error": "The URL content could not be loaded"}), 500
 
 if __name__ == "__main__":
     app.run(debug=True)
